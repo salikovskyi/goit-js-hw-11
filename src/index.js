@@ -68,15 +68,16 @@ async function loadMore(event) {
         if (data.total > 0 && data.hits.length >= 1) {
                 showLoadBtn(loadMoreBtn);
                 Notiflix.Notify.success(`Success ${data.hits.length} images loaded`)
-                return;
+                         renderGallery(data.hits);
+                new SimpleLightbox('.gallery a', { captionDelay: 250, showCounter: false });
             }
             if (data.hits.length === 0) {
                 Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
                 hideLoadBtn(loadMoreBtn)
             
             }
-            renderGallery(data.hits);
-            new SimpleLightbox('.gallery a', { captionDelay: 250, showCounter: false });
+            // renderGallery(data.hits);
+            // new SimpleLightbox('.gallery a', { captionDelay: 250, showCounter: false });
     } catch (err) {
         console.log(err)
     }
