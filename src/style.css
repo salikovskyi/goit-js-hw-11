@@ -50,7 +50,7 @@
   --grid-item: 3;
   display: flex;
   flex-wrap: wrap;
-  flex-basis: calc((100% - 30px var(--grid-item)) var(--grid-item));
+  flex-basis: calc((100% - 30px * var(--grid-item)) / var(--grid-item));
   margin-top: 30px;
   justify-content: space-around;
 }
