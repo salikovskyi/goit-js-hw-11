@@ -34,15 +34,24 @@ async function inputUser(event) {
         console.log(q)
         const { data } = await fetchImages(q);
         if (data.total > 0) {
-                showLoadBtn();
                 Notiflix.Notify.info(`Hooray! We found ${data.totalHits} images.`)
                 renderGallery(data.hits);
-                new SimpleLightbox('.gallery a', { captionDelay: 250, showCounter: false });
+            new SimpleLightbox('.gallery a', { captionDelay: 250, showCounter: false });
+            const { height: cardHeight } = document
+            .querySelector('.gallery')
+            .firstElementChild.getBoundingClientRect();
+
+            window.scrollBy({
+            top: 0,
+            behavior: 'smooth',
+});
                 
-            } else {
+            } else if (data.total < 0)  {
                 Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
                 
-            }  
+        } if (data.totalHits > 40) {
+            showLoadBtn();
+            }
     } catch (err) {
         console.log(err)
     };
@@ -68,14 +77,22 @@ async function loadMore(event) {
         if (data.total > 0 && data.hits.length >= 1) {
                 showLoadBtn(loadMoreBtn);
                 Notiflix.Notify.success(`Success ${data.hits.length} images loaded`)
-                         renderGallery(data.hits);
-                new SimpleLightbox('.gallery a', { captionDelay: 250, showCounter: false });
+                renderGallery(data.hits);
+            new SimpleLightbox('.gallery a', { captionDelay: 250, showCounter: false });
+            const { height: cardHeight } = document
+            .querySelector('.gallery')
+            .firstElementChild.getBoundingClientRect();
+
+            window.scrollBy({
+            top: cardHeight,
+            behavior: 'smooth',
+});
             }
             if (data.hits.length === 0) {
                 Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
                 hideLoadBtn(loadMoreBtn)
             
-            }
+            } 
             // renderGallery(data.hits);
             // new SimpleLightbox('.gallery a', { captionDelay: 250, showCounter: false });
     } catch (err) {
@@ -133,3 +150,28 @@ function hideLoadBtn() {
         //renderGallery(data.hits);
         //new SimpleLightbox('.gallery a', { captionsData: 'alt', captionDelay: 250 });
     }
+
+
+    function trackScroll() {
+  const scrolled = window.pageYOffset;
+  const coords = document.documentElement.clientHeight;
+
+  if (scrolled > coords) {
+    goTopBtn.classList.add('back_to_top-show');
+  }
+  if (scrolled < coords) {
+    goTopBtn.classList.remove('back_to_top-show');
+  }
+}
+
+function backToTop() {
+  if (window.pageYOffset > 0) {
+    window.scrollBy(0, -80);
+    setTimeout(backToTop, 0);
+  }
+}
+
+const goTopBtn = document.querySelector('.back_to_top');
+
+window.addEventListener('scroll', trackScroll);
+goTopBtn.addEventListener('click', backToTop);
